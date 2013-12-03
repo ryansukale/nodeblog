@@ -8,6 +8,8 @@ var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 
+var ArticleProvider = require('./articleprovider-memory').ArticleProvider;
+
 var app = express();
 
 // all environments
@@ -28,9 +30,18 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
-app.get('/users', user.list);
+//app.get('/', routes.index);
+//app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
+});
+
+
+var articleProvider= new ArticleProvider();
+
+app.get("/",function(req, res){
+	articleProvider.findAll(function(error, docs){
+		res.send(docs);
+  });
 });
